@@ -4,11 +4,12 @@ Summary:	Media asset manager for Django
 
 Name:		python-django-mediagenerator
 Version:	1.12
-Release:	1
+Release:	2
 Source0:	https://pypi.python.org/packages/9c/9c/174dac7b8ea9ee2c9a8629eca9bc165cb7243e69811d23f496bda88da132/django-mediagenerator-%{version}.zip
 License:	BSD
 Group:		Development/Python
 Url:		https://pypi.python.org/pypi/django-mediagenerator
+Patch0:		mediagenerator-1.12-python3.patch
 BuildArch:	noarch
 BuildRequires:	python-setuptools
 BuildRequires:	pkgconfig(python3)
@@ -37,6 +38,8 @@ mv django-mediagenerator-%{version} python3
 %if %{with python2}
 cp -r python3 python2
 %endif
+
+%patch0 -p1 -b .py3~
 
 %build
 %if %{with python2}

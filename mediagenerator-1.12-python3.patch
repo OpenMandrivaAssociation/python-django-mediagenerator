@@ -1,0 +1,21 @@
+--- python-django-mediagenerator-1.12/python3/mediagenerator/settings.py.omv~	2016-06-13 18:02:59.420098293 +0200
++++ python-django-mediagenerator-1.12/python3/mediagenerator/settings.py	2016-06-13 18:04:27.892399794 +0200
+@@ -1,5 +1,8 @@
+ from django.conf import settings
+-from django.utils.encoding import force_unicode
++try:
++    from django.utils.encoding import force_text
++except ImportError:
++    from django.utils.encoding import force_text as force_text
+ import os
+ import sys
+ 
+@@ -31,7 +34,7 @@ MEDIA_GENERATORS = getattr(settings, 'ME
+ 
+ _global_media_dirs = getattr(settings, 'GLOBAL_MEDIA_DIRS',
+                              getattr(settings, 'STATICFILES_DIRS', ()))
+-GLOBAL_MEDIA_DIRS = [os.path.normcase(os.path.normpath(force_unicode(path)))
++GLOBAL_MEDIA_DIRS = [os.path.normcase(os.path.normpath(force_text(path)))
+                      for path in _global_media_dirs]
+ 
+ IGNORE_APP_MEDIA_DIRS = getattr(settings, 'IGNORE_APP_MEDIA_DIRS',
