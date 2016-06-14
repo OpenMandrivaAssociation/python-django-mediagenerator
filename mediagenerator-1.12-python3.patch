@@ -19,3 +19,63 @@
                       for path in _global_media_dirs]
  
  IGNORE_APP_MEDIA_DIRS = getattr(settings, 'IGNORE_APP_MEDIA_DIRS',
+--- python-django-mediagenerator-1.12/python3/mediagenerator/base.py.omv~	2016-06-14 01:36:38.397684830 +0200
++++ python-django-mediagenerator-1.12/python3/mediagenerator/base.py	2016-06-14 01:36:53.482602782 +0200
+@@ -3,7 +3,12 @@ from hashlib import sha1
+ 
+ class Generator(object):
+     def generate_version(self, key, url, content):
+-        return sha1(smart_str(content)).hexdigest()
++        s = sha1()
++        if type(content) == str:
++            s.update(content.encode('utf-8'))
++        else:
++            s.update(content)
++        return s.hexdigest()
+ 
+     def get_output(self):
+         """
+--- python-django-mediagenerator-1.12/python3/mediagenerator/utils.py.omv~	2016-06-14 01:39:43.555632236 +0200
++++ python-django-mediagenerator-1.12/python3/mediagenerator/utils.py	2016-06-14 01:39:51.617584400 +0200
+@@ -125,7 +125,7 @@ def read_text_file(path):
+     fp = open(path, 'r')
+     output = fp.read()
+     fp.close()
+-    return output.decode('utf8')
++    return output
+ 
+ def load_backend(backend):
+     if backend not in _backends_cache:
+--- python-django-mediagenerator-1.12/python3/mediagenerator/filters/less.py.omv~	2016-06-14 01:44:56.567685585 +0200
++++ python-django-mediagenerator-1.12/python3/mediagenerator/filters/less.py	2016-06-14 01:46:44.657980619 +0200
+@@ -143,7 +143,9 @@ class Less(Filter):
+ 
+         main_module_path = self._find_file(self.main_module)
+         self._compiled = self._compile(main_module_path, debug=debug)
+-        self._compiled_hash = sha1(smart_str(self._compiled)).hexdigest()
++        s = sha1()
++        s.update(self._compiled.encode('utf-8'))
++        self._compiled_hash = s.hexdigest()
+ 
+     def _compile(self, path, debug=False):
+         try:
+@@ -163,7 +165,7 @@ class Less(Filter):
+             # some lessc errors output to stdout, so we put both in the assertion message
+             assert cmd.wait() == 0, ('Less command returned bad '
+                                      'result:\n%s\n%s' % (error, output))
+-            return output.decode('utf-8')
++            return output
+         except Exception, e:
+             raise ValueError("Failed to run Less compiler for this "
+                 "file. Please confirm that the \"lessc\" application is "
+--- python-django-mediagenerator-1.12/python3/mediagenerator/filters/uglifier.py.omv~	2016-06-14 01:59:16.987846197 +0200
++++ python-django-mediagenerator-1.12/python3/mediagenerator/filters/uglifier.py	2016-06-14 01:59:37.039706279 +0200
+@@ -25,7 +25,7 @@ class Uglifier(Filter):
+                             universal_newlines=True)
+                 output, error = cmd.communicate(smart_str(input))
+                 assert cmd.wait() == 0, 'Command returned bad result:\n%s' % error
+-                yield output.decode('utf-8')
++                yield output
+             except Exception, e:
+                 raise ValueError("Failed to run UglifyJs. "
+                     "Please make sure you have Node.js and UglifyJS installed "
