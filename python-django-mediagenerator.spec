@@ -4,7 +4,7 @@ Summary:	Media asset manager for Django
 
 Name:		python-django-mediagenerator
 Version:	1.12
-Release:	5
+Release:	6
 Source0:	https://pypi.python.org/packages/9c/9c/174dac7b8ea9ee2c9a8629eca9bc165cb7243e69811d23f496bda88da132/django-mediagenerator-%{version}.zip
 License:	BSD
 Group:		Development/Python
